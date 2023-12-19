@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<script defer src="index.js"></script></head>
+<body>
+    <div class="" id="root"></div>
+</body>
+<style>
+    .cell {
+        border: 1px black solid;
+        width: 100%;
+        height: 40px;
+    }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 40px);
+      gap: 5px;
+      margin: 20px auto;
+    }
+    .symbol-red{
+        color: red;
+    }
+    .symbol-blue{
+        color: blue;
+    }
+    .cell--win{
+        background-color: rgba(77, 185, 44, 0.541);
+    }
+</style>
+</html>
