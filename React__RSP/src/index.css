@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
 }
+
 .select-zone {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -20,9 +21,6 @@
   height: auto;
 }
 
-/* 
- */
-
 .result-fields {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -34,30 +32,76 @@
   padding: 10px;
   border: 1px solid #ccc;
   max-height: 70vh;
-  overflow: hidden;
   position: relative;
+  display: flex;
+  min-height: 50vh;
+  min-width: 45vw;
 }
 
 .result-field img {
   max-width: auto;
   max-height: 60vh;
-
 }
-.player-field img{
 
+.player-field img {
   opacity: 0;
-  transition: opacity 2s ease-in-out;
+  animation: appearance 300ms forwards;
+  right: 0;
 }
-.player-field img.appear {
-  opacity: 1; 
-  transition: opacity 2s ease-in-out;
-}
+
 .computer-choice img {
   transform: scaleX(-1);
+  opacity: 0;
+  animation: appearanceBot 320ms forwards;
 }
-/* 
- */
-.main-field {
-  display: flex;
-  flex-direction: column;
+
+.winner img {
+  animation: winnerAppearance 500ms forwards;
+}
+
+@keyframes appearance {
+  0% {
+    opacity: 0;
+    transform: rotate(90deg) translateX(100%) translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) translateX(0) translateY(0);
+  }
+}
+
+@keyframes appearanceBot {
+  0% {
+    opacity: 0;
+    transform: rotate(-90deg) translateX(-100%) translateY(100%) scaleX(-1);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) translateX(0) translateY(0) scaleX(-1);
+  }
+}
+
+.result-field.player-field.winner img {
+  animation: winnerAppearance 500ms forwards;
+}
+
+@keyframes winnerAppearance {
+  0% {
+    transform: scale(1) translateX(0) translateY(0);
+  }
+  100% {
+    transform: scale(1.5) translateX(50%) translateY(50%);
+  }
+  
+}
+@keyframes winnerDisappearance {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.hide{
+  opacity: 0 !important;
 }

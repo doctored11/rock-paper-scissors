@@ -13,8 +13,11 @@ export function GameField() {
   const [computerChoice, setComputerChoice] = useState(null);
   const [result, setResult] = useState(null);
   const [showPlayerChoice, setShowPlayerChoice] = useState(false);
+  
+  const [disableButtons, setDisableButtons] = useState(false);
 
-  const imageKeyRef = useRef(generateKey());
+  const [hideHands, setHideHands] = useState(false);
+  // const [key, setKey] = useState(generateKey());
 
   const choicesImages = {
     1: rockImage,
@@ -23,6 +26,12 @@ export function GameField() {
   };
 
   function handleOnClick(id) {
+    if (disableButtons) {
+      return;
+    }
+    setHideHands(false);
+    setDisableButtons(true);
+
     const computerRandomChoice = Math.floor(Math.random() * 3) + 1;
 
     setPlayerChoice(id);
@@ -33,16 +42,44 @@ export function GameField() {
 
     setShowPlayerChoice(true);
 
-    console.log(id);
+    if (roundResult === "Победа") {
+      console.log("ПОбеда_1");
+      setTimeout(() => {
+        console.log("Анимация победы");
+        // setShowWinner(true);
+        setShowPlayerChoice(false);
+
+        setTimeout(() => {
+          setHideHands(true); ///тут нужна Анимация вылета за экран рук
+          console.log("Анимация конца");
+
+          setDisableButtons(false);
+        }, 500);
+      }, 500);
+    } else {
+      console.log("НЕ_ПОбеда");
+      setTimeout(() => {
+        setShowPlayerChoice(false);
+
+        setDisableButtons(false);
+        setResult(null);
+        console.log("Сброс2");
+        setHideHands(true);
+      }, 500);
+    }
   }
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const showImage = async () => {
+      setShowPlayerChoice(true);
+      await new Promise((resolve) => setTimeout(resolve, 0));
       setShowPlayerChoice(false);
-      imageKeyRef.current = generateKey();
-    }, 300);
-    return () => clearTimeout(timer);
+      // imageKeyRef.current = generateKey();
+    };
+
+    showImage();
   }, [playerChoice]);
- 
+
   function calculateResult(playerValue, computerValue) {
     console.log(playerValue, computerValue);
     if (playerValue == computerValue) {
@@ -53,32 +90,49 @@ export function GameField() {
       return "Проигрыш";
     }
   }
-  function generateKey() {
-    return `${Date.now()}-${Math.random()}`;
-  }
+  // function generateKey() {
+  //   return `${Date.now()}-${Math.random()}`;
+  // }
 
   return (
     <div className="main-field">
       <div className="game-zone">
         <div className="result-fields">
-          <div className="result-field player-field">
+          <div
+            className={`result-field  ${
+              result == "Победа" ? "winner" : "player-field"
+            }  `}
+          >
             <h4>Выбор игрока:</h4>
             {playerChoice !== null ? (
               <img
-                key={imageKeyRef.current}
+                // key={imageKeyRef.current}
+
+                key={Math.random()} //знаю что лучше так не делеть - но мне нужно именно такое поведение
                 src={choicesImages[playerChoice]}
                 alt="Player Choice"
-                className={`player-image ${showPlayerChoice ? "appear" : ""}`}
+                className={`player-image ${showPlayerChoice ? "appear" : ""}${
+                  hideHands ? "hide" : ""
+                }`}
               />
             ) : (
               "-"
             )}{" "}
           </div>
 
-          <div className="result-field  computer-choice">
+          <div
+            className={`result-field  ${
+              result == "Проигрыш" ? "winner" : "computer-choice"
+            }  `} //TODO видимо тут ошибка с увеличением после победы игрока
+          >
             <h4>Выбор компьютера:</h4>
             {computerChoice !== null ? (
-              <img src={choicesImages[computerChoice]} alt="Computer Choice" />
+              <img
+                key={Math.random()}
+                src={choicesImages[computerChoice]}
+                alt="Computer Choice"
+                className={`${hideHands ? "hide" : ""}`}
+              />
             ) : (
               "-"
             )}
@@ -86,15 +140,27 @@ export function GameField() {
         </div>
       </div>
       <ul className="select-zone">
-        <button className="btn btn--rock" onClick={() => handleOnClick(1)}>
+        <button
+          className="btn btn--rock"
+          onClick={() => handleOnClick(1)}
+          disabled={disableButtons}
+        >
           <img src={rockImage} alt="Rock" />
         </button>
 
-        <button className="btn btn--scissors" onClick={() => handleOnClick(2)}>
+        <button
+          className="btn btn--scissors"
+          onClick={() => handleOnClick(2)}
+          disabled={disableButtons}
+        >
           <img src={scissorsImage} alt="Scissors" />
         </button>
 
-        <button className="btn btn--paper" onClick={() => handleOnClick(3)}>
+        <button
+          className="btn btn--paper"
+          onClick={() => handleOnClick(3)}
+          disabled={disableButtons}
+        >
           <img src={paperImage} alt="Paper" />
         </button>
       </ul>
