@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import Hand from "./Hand.jsx";
+import Button from "./Button.jsx";
 import "./index.css";
 //
 import rockImage from "./source/rock.png";
@@ -13,22 +15,37 @@ export function GameField() {
   const [computerChoice, setComputerChoice] = useState(null);
   const [result, setResult] = useState(null);
   const [showPlayerChoice, setShowPlayerChoice] = useState(false);
-  
+
   const [disableButtons, setDisableButtons] = useState(false);
+  const [animateWinner, setAnimateWinner] = useState(false);
 
   const [hideHands, setHideHands] = useState(false);
+
+  const resetGame = () => {
+    setHideHands(true);
+    setTimeout(() => {
+      setPlayerChoice(null);
+      setComputerChoice(null);
+      setResult(null);
+      setShowPlayerChoice(false);
+      setDisableButtons(false);
+      setAnimateWinner(false);
+      setHideHands(false);
+    }, 1000);
+  };
   // const [key, setKey] = useState(generateKey());
 
   const choicesImages = {
-    1: rockImage,
-    2: scissorsImage,
-    3: paperImage,
+    1: "./source/rock.png",
+    2: "./source/scissors.png",
+    3: "./source/paper.png",
   };
 
-  function handleOnClick(id) {
+  const handleOnClick = (id) => {
     if (disableButtons) {
       return;
     }
+
     setHideHands(false);
     setDisableButtons(true);
 
@@ -42,39 +59,21 @@ export function GameField() {
 
     setShowPlayerChoice(true);
 
-    if (roundResult === "Победа") {
-      console.log("ПОбеда_1");
+    if (roundResult === "Победа" || roundResult === "Проигрыш") {
       setTimeout(() => {
-        console.log("Анимация победы");
-        // setShowWinner(true);
+        setAnimateWinner(true);
         setShowPlayerChoice(false);
-
-        setTimeout(() => {
-          setHideHands(true); ///тут нужна Анимация вылета за экран рук
-          console.log("Анимация конца");
-
-          setDisableButtons(false);
-        }, 500);
-      }, 500);
+      }, 2500);
     } else {
-      console.log("НЕ_ПОбеда");
       setTimeout(() => {
         setShowPlayerChoice(false);
-
-        setDisableButtons(false);
-        setResult(null);
-        console.log("Сброс2");
-        setHideHands(true);
-      }, 500);
+      }, 2000);
     }
-  }
+  };
 
   useEffect(() => {
     const showImage = async () => {
       setShowPlayerChoice(true);
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      setShowPlayerChoice(false);
-      // imageKeyRef.current = generateKey();
     };
 
     showImage();
@@ -97,77 +96,50 @@ export function GameField() {
   return (
     <div className="main-field">
       <div className="game-zone">
-        <div className="result-fields">
-          <div
-            className={`result-field  ${
-              result == "Победа" ? "winner" : "player-field"
-            }  `}
-          >
-            <h4>Выбор игрока:</h4>
-            {playerChoice !== null ? (
-              <img
-                // key={imageKeyRef.current}
-
-                key={Math.random()} //знаю что лучше так не делеть - но мне нужно именно такое поведение
-                src={choicesImages[playerChoice]}
-                alt="Player Choice"
-                className={`player-image ${showPlayerChoice ? "appear" : ""}${
-                  hideHands ? "hide" : ""
-                }`}
-              />
-            ) : (
-              "-"
-            )}{" "}
-          </div>
-
-          <div
-            className={`result-field  ${
-              result == "Проигрыш" ? "winner" : "computer-choice"
-            }  `} //TODO видимо тут ошибка с увеличением после победы игрока
-          >
-            <h4>Выбор компьютера:</h4>
-            {computerChoice !== null ? (
-              <img
-                key={Math.random()}
-                src={choicesImages[computerChoice]}
-                alt="Computer Choice"
-                className={`${hideHands ? "hide" : ""}`}
-              />
-            ) : (
-              "-"
-            )}
-          </div>
-        </div>
+        <Hand
+          choice={playerChoice}
+          showChoice={showPlayerChoice}
+          hideHands={hideHands}
+          isPlayer={true}
+          result={result}
+          isAniWinner={animateWinner}
+          choicesImages={choicesImages}
+        />
+        <Hand
+          choice={computerChoice}
+          showChoice={showPlayerChoice}
+          hideHands={hideHands}
+          isPlayer={false}
+          result={result}
+          isAniWinner={animateWinner}
+          choicesImages={choicesImages}
+        />
       </div>
       <ul className="select-zone">
-        <button
-          className="btn btn--rock"
+        <Button
+          label="Rock"
           onClick={() => handleOnClick(1)}
           disabled={disableButtons}
-        >
-          <img src={rockImage} alt="Rock" />
-        </button>
-
-        <button
-          className="btn btn--scissors"
+          choiceImage={choicesImages[1]}
+        />
+        <Button
+          label="Scissors"
           onClick={() => handleOnClick(2)}
           disabled={disableButtons}
-        >
-          <img src={scissorsImage} alt="Scissors" />
-        </button>
-
-        <button
-          className="btn btn--paper"
+          choiceImage={choicesImages[2]}
+        />
+        <Button
+          label="Paper"
           onClick={() => handleOnClick(3)}
           disabled={disableButtons}
-        >
-          <img src={paperImage} alt="Paper" />
-        </button>
+          choiceImage={choicesImages[3]}
+        />
       </ul>
       {result && (
-        <div className="result">
+        <div className={`result ${animateWinner ? "animate" : ""}`}>
           <h3>Результат раунда:</h3>
           <p>{result}</p>
+          <button onClick={resetGame}>Новая игра</button>
         </div>
       )}
     </div>

@@ -43,7 +43,7 @@
   max-height: 60vh;
 }
 
-.player-field img {
+.appear {
   opacity: 0;
   animation: appearance 300ms forwards;
   right: 0;
@@ -55,10 +55,13 @@
   animation: appearanceBot 320ms forwards;
 }
 
-.winner img {
-  animation: winnerAppearance 500ms forwards;
+.winner {
+  animation: winnerAppearance 300ms forwards;
+  background-color: red;
 }
-
+.game-zone{
+  display: flex;
+}
 @keyframes appearance {
   0% {
     opacity: 0;
@@ -81,7 +84,7 @@
   }
 }
 
-.result-field.player-field.winner img {
+.winner  {
   animation: winnerAppearance 500ms forwards;
 }
 
@@ -103,5 +106,18 @@
   }
 }
 .hide{
-  opacity: 0 !important;
+  
+  animation: hideAni 320ms forwards;
+  
+}
+
+@keyframes hideAni {
+  0% {
+    opacity: 1;
+    transform:  translateX(0) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform:  translateX(10%) translateY(100%);
+  }
 }
