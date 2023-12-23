@@ -8,6 +8,7 @@ import scissorsImage from "./source/scissors.png";
 import paperImage from "./source/paper.png";
 
 // import { Gameinfo } from "./GameInfo.jsx";
+const gameDelay = 800;
 
 // пример компонента
 export function GameField() {
@@ -17,12 +18,17 @@ export function GameField() {
   const [showPlayerChoice, setShowPlayerChoice] = useState(false);
 
   const [disableButtons, setDisableButtons] = useState(false);
+  const [restartButtonDisabled, setRestartButtonDisabled] = useState(false);
+
   const [animateWinner, setAnimateWinner] = useState(false);
 
   const [hideHands, setHideHands] = useState(false);
 
   const resetGame = () => {
+    setAnimateWinner(false);
     setHideHands(true);
+    setRestartButtonDisabled(true);
+
     setTimeout(() => {
       setPlayerChoice(null);
       setComputerChoice(null);
@@ -31,7 +37,8 @@ export function GameField() {
       setDisableButtons(false);
       setAnimateWinner(false);
       setHideHands(false);
-    }, 1000);
+      setRestartButtonDisabled(false);
+    }, gameDelay);
   };
   // const [key, setKey] = useState(generateKey());
 
@@ -48,6 +55,7 @@ export function GameField() {
 
     setHideHands(false);
     setDisableButtons(true);
+    setRestartButtonDisabled(true);
 
     const computerRandomChoice = Math.floor(Math.random() * 3) + 1;
 
@@ -63,11 +71,13 @@ export function GameField() {
       setTimeout(() => {
         setAnimateWinner(true);
         setShowPlayerChoice(false);
-      }, 2500);
+        setRestartButtonDisabled(false);
+      }, gameDelay);
     } else {
       setTimeout(() => {
         setShowPlayerChoice(false);
-      }, 2000);
+        setRestartButtonDisabled(false);
+      }, gameDelay * 0.8);
     }
   };
 
@@ -95,6 +105,7 @@ export function GameField() {
 
   return (
     <div className="main-field">
+      <div className="game-stage"></div>
       <div className="game-zone">
         <Hand
           choice={playerChoice}
@@ -135,13 +146,15 @@ export function GameField() {
           choiceImage={choicesImages[3]}
         />
       </ul>
-      {result && (
+      {
         <div className={`result ${animateWinner ? "animate" : ""}`}>
           <h3>Результат раунда:</h3>
           <p>{result}</p>
-          <button onClick={resetGame}>Новая игра</button>
+          <button onClick={resetGame} disabled={restartButtonDisabled}>
+            Новая игра
+          </button>
         </div>
-      )}
+      }
     </div>
   );
 }

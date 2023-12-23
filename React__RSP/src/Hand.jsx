@@ -19,17 +19,19 @@ const Hand = ({
     (result === "Проигрыш" && !isPlayer && isAniWinner);
 
   return (
-    <div className={`result-field ${shouldAnimate ? "winner" : " "}`}>
+    <div className={`result-field `}>
       <h4>{isPlayer ? "Выбор игрока:" : "Выбор компьютера:"}</h4>
       {choice !== null ? (
-        <img
-          key={Math.random()}
-          src={require(`${imagePath}`).default}
-          alt={`${isPlayer ? "Player" : "Computer"} Choice`}
-          className={`player-image ${showChoice ? "appear" : ""} ${
-            hideHands ? "hide" : ""
-          } ${shouldAnimate ? "winner" : ""}`}
-        />
+        <div className={`hand ${shouldAnimate ? "winner" : ""}`}>
+          <img
+            key={Math.random()}
+            src={require(`${imagePath}`).default}
+            alt={`${isPlayer ? "Player" : "Computer"} Choice`}
+            className={`${isPlayer ? "player-image" : "computer-image"} ${
+              showChoice ? "appear" : ""
+            } ${hideHands ? "hide" : ""} ${shouldAnimate ? "winner" : ""}`}
+          />
+        </div>
       ) : (
         "-"
       )}
