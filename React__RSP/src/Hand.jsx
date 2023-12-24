@@ -13,7 +13,7 @@ const Hand = ({
   choicesImages,
 }) => {
   const imagePath = choicesImages[choice];
-
+ 
   const shouldAnimate =
     (result === "Победа" && isPlayer && isAniWinner) ||
     (result === "Проигрыш" && !isPlayer && isAniWinner);
@@ -22,7 +22,7 @@ const Hand = ({
     <div className={`result-field `}>
       <h4>{isPlayer ? "Выбор игрока:" : "Выбор компьютера:"}</h4>
       {choice !== null ? (
-        <div className={`hand ${shouldAnimate ? "winner" : ""}`}>
+        <div className={`hand ${shouldAnimate ? "winner" : ""} ${isPlayer? "player-hand":"computer-hand"}`}>
           <img
             key={Math.random()}
             src={require(`${imagePath}`).default}

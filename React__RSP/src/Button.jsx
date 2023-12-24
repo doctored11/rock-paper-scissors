@@ -1,7 +1,7 @@
 import React from "react";
 
 const Button = ({ label, onClick, disabled, choiceImage }) => (
-  <button className={`btn btn--${label.toLowerCase()}`} onClick={onClick} disabled={disabled}>
+  <button className={`btn btn--${label.toLowerCase()} btn--choice` } onClick={onClick} disabled={disabled}>
     {choiceImage && (
       <img
         src={require(`${choiceImage}`).default}
