@@ -161,6 +161,17 @@ export function GameField() {
     showImage();
   }, [playerChoice]);
 
+  useEffect(() => {
+    const storedMainBalance = localStorage.getItem("mainBalance");
+    if (storedMainBalance) {
+      setMainBalance(parseFloat(storedMainBalance));
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("mainBalance", mainBalance.toFixed(3));
+   
+  }, [mainBalance]);
+
   function calculateResult(playerValue, computerValue) {
     console.log(playerValue, computerValue);
     if (playerValue == computerValue) {
