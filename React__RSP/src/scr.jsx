@@ -5,6 +5,7 @@ import Slider from "./Slider.jsx";
 import LevelBar from "./LevelBar.jsx";
 
 import "./index.css";
+import "./media.css";
 //
 
 // import { Gameinfo } from "./GameInfo.jsx";
@@ -169,8 +170,32 @@ export function GameField() {
   }, []);
   useEffect(() => {
     localStorage.setItem("mainBalance", mainBalance.toFixed(3));
-   
   }, [mainBalance]);
+  useEffect(() => {
+    if (mainBalance < 5 && betAmount < 1) {
+      setTimerSeconds(45);
+    }
+  }, [mainBalance, betAmount]);
+
+  const [timerSeconds, setTimerSeconds] = useState(null);
+  const getRandomCoins = () =>
+    (Math.floor(Math.random() * (50 - 0.5)) + 0.5) * 100;
+
+  useEffect(() => {
+    let timer;
+    const bonusCoins = getRandomCoins();
+
+    if (timerSeconds !== null && timerSeconds > 0) {
+      timer = setTimeout(() => {
+        setTimerSeconds((prevSeconds) => prevSeconds - 1);
+      }, 1000);
+    } else if (timerSeconds === 0) {
+      setMainBalance((prevBalance) => prevBalance + bonusCoins);
+      setTimerSeconds(null);
+    }
+
+    return () => clearTimeout(timer);
+  }, [timerSeconds, mainBalance]);
 
   function calculateResult(playerValue, computerValue) {
     console.log(playerValue, computerValue);
@@ -186,17 +211,25 @@ export function GameField() {
   //   return `${Date.now()}-${Math.random()}`;
   // }
 
+  const showBalance = timerSeconds === null || timerSeconds <= 0;
+
   return (
     <div className="main-field">
       <header className="game-stage">
         <div className="frame">
           <div className="game-info">
-            <p></p>
-            <div className="balance">
-              <p>Баланс: {parseFloat(mainBalance.toFixed(3))}</p>
-            </div>
-          </div>
+            {timerSeconds !== null && timerSeconds > 0 && (
+              <div className="timer">
+                <p> Немного деняг через: {timerSeconds} </p>
+              </div>
+            )}
 
+            {showBalance && (
+              <div className="balance">
+                <p>Баланс: {parseFloat(mainBalance.toFixed(3))}</p>
+              </div>
+            )}
+          </div>
           <div className="game-stage__status">
             <LevelBar
               currentLevel={currentLevel}
@@ -287,7 +320,8 @@ export function GameField() {
       </ul>
       {
         <div className={`result ${animateWinner ? "animate" : ""}`}>
-          <button className="btn"
+          <button
+            className="btn"
             onClick={() => {
               result !== "Проигрыш" ? handleTakeWin() : resetGame();
             }}
